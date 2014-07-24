@@ -35,18 +35,20 @@ SERVER_DIR=`(cd "$CWD" && pwd)`
 [ ! -z $GO_SERVER_PORT ] || GO_SERVER_PORT="8153"
 [ ! -z $GO_SERVER_SSL_PORT ] || GO_SERVER_SSL_PORT="8154"
 [ ! -z "$SERVER_WORK_DIR" ] || SERVER_WORK_DIR="$SERVER_DIR"
-[ ! -z "$YOURKIT_DISBALE_TRACING" ] || YOURKIT_DISBALE_TRACING=""
+[ ! -z "$GO_LOG_DIRECTORY" ] || GO_LOG_DIRECTORY="/var/log/go-server"
+[ ! -z "$GO_PID_DIRECTORY" ] || GO_LOG_DIRECTORY="/var/run/go-server"
+[ ! -z "$GO_YOURKIT_DIRECTORY" ] || GO_YOURKIT_DIRECTORY="/usr/lib/yourkit"
 
-if [ -d /var/log/go-server ]; then
-    LOG_FILE=/var/log/go-server/go-server.log
+if [ -d "$GO_LOG_DIRECTORY" ]; then
+    LOG_FILE=$GO_LOG_DIRECTORY/go-server.log
 else
     LOG_FILE=go-server.log
 fi
 
 if [ "$PID_FILE" ]; then
     echo "Overriding PID_FILE with $PID_FILE"
-elif [ -d /var/run/go-server ]; then
-    PID_FILE=/var/run/go-server/go-server.pid
+elif [ -d "$GO_PID_DIRECTORY" ]; then
+    PID_FILE=$GO_PID_DIRECTORY/go-server.pid
 else
     PID_FILE=go-server.pid
 fi
@@ -57,10 +59,10 @@ else
     GO_CONFIG_DIR=$SERVER_DIR/config
 fi
 
-if [ -e /usr/lib/yourkit/libyjpagent.jnilib ]; then
-    YOURKIT_PATH="/usr/lib/yourkit/libyjpagent.jnilib"
-elif [ -e /usr/lib/yourkit/libyjpagent.so ]; then
-    YOURKIT_PATH="/usr/lib/yourkit/libyjpagent.so"
+if [ -e "$GO_YOURKIT_DIRECTORY/libyjpagent.jnilib" ]; then
+    YOURKIT_PATH="$GO_YOURKIT_DIRECTORY/libyjpagent.jnilib"
+elif [ -e "$GO_YOURKIT_DIRECTORY/libyjpagent.so" ]; then
+    YOURKIT_PATH="$GO_YOURKIT_DIRECTORY/libyjpagent.so"
 fi
 
 YJP_PARAMS_9="
